@@ -1,0 +1,14 @@
+version: "3.7"
+services:
+  db:
+    container_name: db
+    image: mysql:8.0
+    platform: linux/amd64
+    restart: always
+    environment:
+      - MYSQL_USER=leadchild
+      - MYSQL_PASSWORD=leadchild
+      - MYSQL_ROOT_PASSWORD=leadchild
+      - MYSQL_DATABASE=indietown
+    ports:
+      - "3306:3306"
