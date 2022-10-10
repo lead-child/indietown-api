@@ -7,9 +7,159 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id Int @id @default(autoincrement())
-  name String @db.VarChar(255)
+// 계정 스키마
+
+model Account {
+  id        Int      @id @default(autoincrement())
+
+  email     String   @unique
+  password  String
+
+  accessToken String?
+  refreshToken String?
+
+  lastLoggedIn DateTime? @default(now())
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+}
+
+/// 아이템 스키마
+
+model Item {
+  id Int @id @default(autoincrement())
+  type ItemType @default(NONE)
+
+  name String @db.VarChar(255)
+  grade ItemGrade @default(COMMON)
+  description String @db.VarChar(255)
+
+  equipmentType ItemEquipmentType @default(NONE)
+
+  headId Int?
+  headAccId Int?
+  hairId Int?
+  chestId Int?
+  spineId Int?
+  spine2Id Int?
+  armsId Int?
+  legsId Int?
+
+  leftWeaponId Int?
+  rightWeaponId Int?
+  
+  leftShieldId Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ItemType {
+  NONE
+  USABLE
+  EQUIP
+}
+
+enum ItemGrade {
+  COMMON
+  RARE
+  EPIC
+  UNIQUE
+}
+
+enum ItemEquipmentType {
+  NONE
+  HEAD
+  TORSO
+  LEGS
+  WEAPON
+  SHIELD
+}
+
+
+// 유저 스키마
+
+model User {
+  id Int @id @default(autoincrement())
+  accountId Int
+
+  name String @db.VarChar(255)
+  level Int @default(1)
+
+  headId Int
+  hairId Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserWallet {
+  id Int @id @default(autoincrement())
+  userId Int @unique
+
+  balanceCash Decimal @default(0)
+  balanceFreeCash Decimal @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserInventoryItem {
+  id Int @id @default(autoincrement())
+  
+  userId Int
+  itemId Int
+  amount Int @default(1)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserEquipment {
+  userId Int @id @unique
+
+  headItemId Int?
+  torsoItemId Int?
+  legsItemId Int?
+
+  leftWeaponItemId Int?
+  rightWeaponItemId Int?
+ 
+  leftShieldItemId Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// 퀴즈 스키마
+
+model Quiz {
+  id Int @id @default(autoincrement())
+
+  level QuizLevel
+  category QuizCategory
+
+  question String @db.VarChar(255)
+
+  answerChoices Json @db.Json
+  answerChoiceIndex Int
+  answerScore Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum QuizCategory {
+  KOREAN
+  ENGLISH
+  MATH
+  COMMON_SENSE
+  NUNSENSE
+}
+
+enum QuizLevel {
+  EASY
+  NORMAL
+  HARD
 }
