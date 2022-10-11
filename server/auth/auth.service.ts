@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import prisma from "../prisma";
-import { UnauthroizeException } from "../common/exception";
+import { BadRequestException, UnauthroizeException } from "../common/exception";
 
-interface AccessTokenPayload {
+export interface AccessTokenPayload {
   accountId: number;
 }
 
@@ -29,11 +29,20 @@ export async function login(email: string, password: string) {
     );
   }
 
+  await prisma.account.update({
+    where: {
+      id: account.id,
+    },
+    data: {
+      lastLoggedIn: new Date(),
+    },
+  });
+
   const payload: AccessTokenPayload = {
     accountId: account.id,
   };
 
-  const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+  const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET!!, {
     expiresIn: "7d",
   });
 
@@ -48,7 +57,7 @@ export async function register(
   passwordConfirm: string
 ) {
   if (password !== passwordConfirm) {
-    throw new UnauthroizeException(
+    throw new BadRequestException(
       "auth.password_not_match",
       "비밀번호가 일치하지 않습니다."
     );
@@ -56,19 +65,33 @@ export async function register(
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const account = await prisma.account.create({
-    data: {
-      email: email,
-      password: hashedPassword,
-    },
-  });
+  const accessToken = await prisma.$transaction(async (tx) => {
+    const existsEmail =
+      (await tx.account.count({ where: { email: email } })) > 0;
 
-  const payload: AccessTokenPayload = {
-    accountId: account.id,
-  };
+    if (existsEmail) {
+      throw new BadRequestException(
+        "auth.email_already_exists",
+        "이미 존재하는 이메일입니다."
+      );
+    }
 
-  const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "7d",
+    const account = await tx.account.create({
+      data: {
+        email: email,
+        password: hashedPassword,
+      },
+    });
+
+    const payload: AccessTokenPayload = {
+      accountId: account.id,
+    };
+
+    const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET!!, {
+      expiresIn: "7d",
+    });
+
+    return accessToken;
   });
 
   return {
@@ -76,17 +99,26 @@ export async function register(
   };
 }
 
-export async function authenticate(
-  accessToken: string,
-  refreshToken: string
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
-      if (err) {
-        return reject(err);
-      }
+export interface AuthenticateData {
+  accountId: number;
+}
 
-      return resolve(true);
-    });
+export async function authenticate(
+  accessToken: string
+): Promise<AuthenticateData> {
+  return new Promise((resolve, reject) => {
+    jwt.verify(
+      accessToken,
+      process.env.ACCESS_TOKEN_SECRET!!,
+      (err, payload) => {
+        if (err) {
+          return reject(err);
+        }
+
+        return resolve({
+          accountId: (payload as AccessTokenPayload).accountId,
+        });
+      }
+    );
   });
 }

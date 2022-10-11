@@ -23,6 +23,8 @@ export function exceptionHandler(
     };
 
     return res.status(statusCode).json(response);
+  } else {
+    console.error(err);
   }
 
   return res.status(500).json({

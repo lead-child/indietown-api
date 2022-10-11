@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
 }
 
 datasource db {
@@ -14,9 +15,6 @@ model Account {
 
   email     String   @unique
   password  String
-
-  accessToken String?
-  refreshToken String?
 
   lastLoggedIn DateTime? @default(now())
 
