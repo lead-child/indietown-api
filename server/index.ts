@@ -2,7 +2,7 @@ require("dotenv").config();
 import express from "express";
 import cors from "cors";
 import { exceptionHandler } from "./common/exception.handler";
-import * as authController from "./auth/auth.controller";
+import * as authController from "./api/auth/auth.controller";
 import { async } from "./common/async";
 
 const app = express();
