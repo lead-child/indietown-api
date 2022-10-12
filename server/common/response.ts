@@ -5,6 +5,10 @@ export interface ApiDataResponse<T> {
 }
 
 export interface ApiErrorResponse {
+  errors: ApiError[];
+}
+
+export interface ApiError {
   code: string;
   message: string;
   debug?: string;

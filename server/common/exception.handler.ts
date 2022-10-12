@@ -17,9 +17,13 @@ export function exceptionHandler(
   if (err instanceof DomainException) {
     const statusCode = getHttpStatusCode(err);
     const response: ApiErrorResponse = {
-      code: err.code,
-      message: err.message,
-      debug: err.debug,
+      errors: [
+        {
+          code: err.code,
+          message: err.message,
+          debug: err.debug,
+        },
+      ],
     };
 
     return res.status(statusCode).json(response);
@@ -28,9 +32,13 @@ export function exceptionHandler(
   }
 
   return res.status(500).json({
-    code: "INTERNAL_SERVER_ERROR",
-    message: "서버 오류가 발생했습니다.",
-  });
+    errors: [
+      {
+        code: "INTERNAL_SERVER_ERROR",
+        message: "서버 오류가 발생했습니다.",
+      },
+    ],
+  } as ApiErrorResponse);
 }
 
 function getHttpStatusCode(err: DomainException) {

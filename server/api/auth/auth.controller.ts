@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { ApiDataResponse } from "../../common/response";
 import * as authService from "./auth.service";
 
 interface LoginRequestData {
@@ -12,13 +13,15 @@ interface LoginResponseData {
 
 export async function login(
   req: Request<{}, {}, LoginRequestData>,
-  res: Response<LoginResponseData>
+  res: Response<ApiDataResponse<LoginResponseData>>
 ) {
   const { email, password } = req.body;
   const { accessToken } = await authService.login(email, password);
 
   res.status(200).json({
-    accessToken: accessToken,
+    data: {
+      accessToken: accessToken,
+    },
   });
 }
 
@@ -34,7 +37,7 @@ interface RegisterResponseData {
 
 export async function register(
   req: Request<{}, {}, RegisterRequestData>,
-  res: Response<RegisterResponseData>
+  res: Response<ApiDataResponse<RegisterResponseData>>
 ) {
   const { email, password, passwordConfirm } = req.body;
   const { accessToken } = await authService.register(
@@ -44,6 +47,8 @@ export async function register(
   );
 
   res.status(200).json({
-    accessToken: accessToken,
+    data: {
+      accessToken: accessToken,
+    },
   });
 }
