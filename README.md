@@ -1,5 +1,7 @@
 # 인디타운 API
 
+## Getting Started
+
 ## Prisma
 
 - [Prisma 개발 문서](https://www.prisma.io/docs)
