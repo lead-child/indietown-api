@@ -17,6 +17,7 @@ app.post("/api/v1/auth/register", async(authController.register));
 
 app.use(exceptionHandler);
 
-app.listen(8081, () => {
-  console.log("Server is listening on port 8081");
+const port: number = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server is listening on port ${port}`);
 });

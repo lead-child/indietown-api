@@ -1,4 +1,4 @@
-name: Deploy to EB
+name: Deploy Production
 
 on:
   push:
@@ -52,7 +52,7 @@ jobs:
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*' './server/*' './prisma/*' './aws/*' awscliv2.zip
 
-      - name: Deploy to EB
+      - name: Deploy beanstalk
         uses: einaregilsson/beanstalk-deploy@v14
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
