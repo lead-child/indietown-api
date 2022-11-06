@@ -10,10 +10,6 @@ jobs:
     name: Deploy
     runs-on: ubuntu-18.04
 
-    strategy:
-      matrix:
-        node-version: ["16"]
-
     steps:
       - uses: actions/checkout@v2
 
@@ -24,10 +20,10 @@ jobs:
           echo NODE_ENV=production >> .env
           cat .env
 
-      - name: Install Node.js ${{ matrix.node-version }}
+      - name: Install Node.js 16
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: Install dependencies
         run: npm install
@@ -60,5 +56,5 @@ jobs:
           application_name: indietown-api
           environment_name: Indietownapi-env
           region: ${{ secrets.AWS_REGION }}
-          version_label: ${{github.SHA}}
+          version_label: ${{ github.SHA }}
           deployment_package: deploy.zip
