@@ -17,7 +17,7 @@ app.post("/api/v1/auth/register", async(authController.register));
 
 app.use(exceptionHandler);
 
-const port: number = process.env.PORT || 3000;
+const port: number = Number.parseInt(process.env.PORT || "3000");
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
 });
