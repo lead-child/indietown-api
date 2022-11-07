@@ -1,4 +1,5 @@
 import axios from "axios";
+import { MathpidProblem } from "./mathpid.model";
 
 const api = axios.create({
   baseURL: "https://prd-brs-relay-model.mathpid.com/",
@@ -8,9 +9,7 @@ const api = axios.create({
   validateStatus: (status) => status < 500,
 });
 
-export type ProblemLevel = "A" | "B" | "C" | "D";
-
-interface GetProblemQuery {
+interface GetMathpidProblemQuery {
   os: string;
   deviceId: string;
   /**
@@ -22,19 +21,11 @@ interface GetProblemQuery {
   level?: string;
 }
 
-interface GetProblemResult {
-  code: string;
-  content: string;
-  description: string;
-  answer: string;
-  wrongAnswer: string[];
-}
-
-export async function getProblem({
+export async function getMathpidProblem({
   deviceId,
   os,
   level,
-}: GetProblemQuery): Promise<GetProblemResult> {
+}: GetMathpidProblemQuery): Promise<MathpidProblem> {
   const response = await api.post("/api/v1/contest/diagnosis/setting", {
     mbrId: "aaaaaaaaaaaaaaaaaaaa",
     deviceNm: deviceId,
@@ -48,11 +39,18 @@ export async function getProblem({
 
   const { data } = response.data;
 
+  const choices = [data.qstCransr, ...data.qstWransr?.split(",")];
+  choices.sort(() => Math.random() - 0.5);
+
+  const correctChoiceId = choices.findIndex(
+    (value) => value === data.qstCransr
+  );
+
   return {
     code: data.qstCd,
     content: data.qstCn,
     description: data.textCn,
-    answer: data.qstCransr,
-    wrongAnswer: data.qstWransr?.split(","),
+    choices: choices,
+    correctChoiceId: correctChoiceId,
   };
 }
