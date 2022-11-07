@@ -52,6 +52,13 @@ model Item {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  headItemEquipments UserEquipment[] @relation("headItem")
+  torsoItemEquipments UserEquipment[] @relation("torsoItem")
+  legsItemEquipments UserEquipment[] @relation("legsItem")
+  leftWeaponItemEquipments UserEquipment[] @relation("leftWeaponItem")
+  rightWeaponItemEquipments UserEquipment[] @relation("rightWeaponItem")
+  leftShieldItemEquipments UserEquipment[] @relation("leftShieldItem")
 }
 
 enum ItemType {
@@ -91,6 +98,8 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  equipment UserEquipment?
 }
 
 model UserWallet {
@@ -117,15 +126,25 @@ model UserInventoryItem {
 
 model UserEquipment {
   userId Int @id @unique
+  user User @relation(fields: [userId], references: [id])
 
   headItemId Int?
+  headItem Item? @relation(name: "headItem", fields: [headItemId], references: [id])
+
   torsoItemId Int?
+  torsoItem Item? @relation(name: "torsoItem", fields: [torsoItemId], references: [id])
+
   legsItemId Int?
+  legsItem Item? @relation(name: "legsItem", fields: [legsItemId], references: [id])
 
   leftWeaponItemId Int?
+  leftWeaponItem Item? @relation(name: "leftWeaponItem", fields: [leftWeaponItemId], references: [id])
+
   rightWeaponItemId Int?
+  rightWeaponItem Item? @relation(name: "rightWeaponItem", fields: [rightWeaponItemId], references: [id])
  
   leftShieldItemId Int?
+  leftShieldItem Item? @relation(name: "leftShieldItem", fields: [leftShieldItemId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
