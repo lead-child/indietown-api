@@ -36,19 +36,19 @@ model Item {
 
   equipmentType ItemEquipmentType @default(NONE)
 
-  headId Int?
-  headAccId Int?
-  hairId Int?
-  chestId Int?
-  spineId Int?
-  spine2Id Int?
-  armsId Int?
-  legsId Int?
+  headId String? @db.VarChar(8)
+  headAccId String? @db.VarChar(8)
+  hairId String? @db.VarChar(8)
+  chestId String? @db.VarChar(8)
+  spineId String? @db.VarChar(8)
+  spine2Id String? @db.VarChar(8)
+  armsId String? @db.VarChar(8)
+  legsId String? @db.VarChar(8)
 
-  leftWeaponId Int?
-  rightWeaponId Int?
+  leftWeaponId String? @db.VarChar(8)
+  rightWeaponId String? @db.VarChar(8)
   
-  leftShieldId Int?
+  leftShieldId String? @db.VarChar(8)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -86,8 +86,8 @@ model User {
   name String @db.VarChar(255)
   level Int @default(1)
 
-  headId Int @default(0)
-  hairId Int @default(0)
+  headId String @db.VarChar(8)
+  hairId String @db.VarChar(8)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
