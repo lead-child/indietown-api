@@ -8,5 +8,8 @@
     "strict": true,
     "skipLibCheck": true,
     "outDir": "build"
+  },
+  "ts-node": {
+    "files": true
   }
 }
