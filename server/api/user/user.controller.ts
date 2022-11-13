@@ -1,46 +1,49 @@
 import { Request, Response } from "express";
+import { UnauthroizeException } from "../../common/exception";
 import { ApiDataResponse } from "../../common/response";
-import prisma from "../../prisma";
+import { UserWithEquipmentId } from "./user.model";
+import * as UserService from "./user.service";
 
-interface GetUserByIdResponse {}
+interface CreateUserRequest {
+  name: string;
+  hairId: number;
+  headId: number;
+}
+interface CreateUserResponse {}
 
-export async function getUserById(
-  req: Request<any, {}, {}>,
-  res: Response<ApiDataResponse<any>>
-) {
-  const user = await prisma.user.findFirst({
-    where: {
-      id: {
-        equals: Number.parseInt(req.params?.id),
-      },
-    },
-    select: {
-      id: true,
-      name: true,
-      level: true,
-      headId: true,
-      hairId: true,
-      equipment: {
-        select: {
-          headItem: { select: { headId: true, headAccId: true } },
-          torsoItem: {
-            select: {
-              chestId: true,
-              spineId: true,
-              spine2Id: true,
-              armsId: true,
-            },
-          },
-          legsItem: { select: { legsId: true } },
-          leftWeaponItem: { select: { leftWeaponId: true } },
-          rightWeaponItem: { select: { rightWeaponId: true } },
-          leftShieldItem: { select: { leftShieldId: true } },
-        },
-      },
-    },
+export const createUser = async (
+  req: Request<any, any, CreateUserRequest>,
+  res: Response<ApiDataResponse<CreateUserResponse>>
+) => {
+  const { name, hairId, headId } = req.body;
+
+  await UserService.createUser({
+    accountId: req.context?.accountId!!,
+    name,
+    hairId,
+    headId,
   });
 
   res.status(200).json({
-    data: user,
+    data: {},
   });
+};
+
+interface GetUserByIdResponse {
+  user: UserWithEquipmentId;
 }
+
+export const getUserById = async (
+  req: Request,
+  res: Response<ApiDataResponse<GetUserByIdResponse>>
+) => {
+  const { id } = req.params;
+
+  const user = await UserService.getUserWithEquipmentId(Number.parseInt(id));
+
+  res.status(200).json({
+    data: {
+      user,
+    },
+  });
+};
