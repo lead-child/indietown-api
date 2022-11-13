@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { async } from "../../common/async";
+import { async } from "@src/common/async";
 import * as controller from "./mathpid.controller";
 
 const router = Router();

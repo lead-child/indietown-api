@@ -1,4 +1,4 @@
-import prisma from "../../prisma";
+import prisma from "@src/prisma";
 import { Account } from "./account.model";
 
 export const findAccountById = async (id: number): Promise<Account | null> => {

@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { async } from "../../common/async";
-import { authenticator } from "../../middleware/authentication";
+import { async } from "@src/common/async";
+import { authenticator } from "@src/middleware/authentication";
 import * as controller from "./user.controller";
 
 const router = Router();

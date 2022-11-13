@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ApiDataResponse } from "../../common/response";
+import { ApiDataResponse } from "@src/common/response";
 import * as authService from "./auth.service";
 
 interface LoginRequestData {

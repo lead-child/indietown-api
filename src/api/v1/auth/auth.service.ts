@@ -1,10 +1,10 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import prisma from "../../prisma";
+import prisma from "@src/prisma";
 import {
   BadRequestException,
   UnauthroizeException,
-} from "../../common/exception";
+} from "@src/common/exception";
 
 export interface AccessTokenPayload {
   accountId: number;

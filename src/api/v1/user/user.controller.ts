@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import { UnauthroizeException } from "../../common/exception";
-import { ApiDataResponse } from "../../common/response";
+import { ApiDataResponse } from "@src/common/response";
 import { UserWithEquipmentId } from "./user.model";
 import * as UserService from "./user.service";
 

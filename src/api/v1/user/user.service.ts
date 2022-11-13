@@ -1,5 +1,5 @@
-import { BadRequestException, NotFoundException } from "../../common/exception";
-import prisma from "../../prisma";
+import { BadRequestException, NotFoundException } from "@src/common/exception";
+import prisma from "@src/prisma";
 import { UserWithEquipmentId } from "./user.model";
 
 export interface CreateUserCommand {

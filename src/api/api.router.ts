@@ -1,12 +1,7 @@
 import { Router } from "express";
-
-import { authRouter } from "./auth/auth.router";
-import { mathpidRouter } from "./mathpid/mathpid.router";
-import { userRouter } from "./user/user.router";
+import { apiV1Router } from "./v1/api.v1.router";
 
 const router = Router();
-router.use("/auth", authRouter);
-router.use("/mathpid", mathpidRouter);
-router.use("/user", userRouter);
+router.use("/v1", apiV1Router);
 
 export { router as apiRouter };

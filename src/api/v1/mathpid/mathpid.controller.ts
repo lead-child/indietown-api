@@ -1,7 +1,6 @@
-import axios from "axios";
 import { Request, Response } from "express";
-import { BadRequestException } from "../../common/exception";
-import { ApiDataResponse } from "../../common/response";
+import { BadRequestException } from "@src/common/exception";
+import { ApiDataResponse } from "@src/common/response";
 import { MathpidProblem } from "./mathpid.model";
 import * as MathpidService from "./mathpid.service";
 
