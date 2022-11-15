@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { ApiDataResponse } from "@src/common/response";
-import { UserWithEquipmentId } from "./user.model";
+import { UserInventoryItem, UserWithEquipmentId } from "./user.model";
 import * as UserService from "./user.service";
 
 interface CreateUserRequest {
@@ -43,6 +43,25 @@ export const getUserById = async (
   res.status(200).json({
     data: {
       user,
+    },
+  });
+};
+
+interface GetUserInventoryResponse {
+  items: UserInventoryItem[];
+}
+
+export const getUserInventoryById = async (
+  req: Request<any, any, any>,
+  res: Response<ApiDataResponse<GetUserInventoryResponse>>
+) => {
+  const userId = req.context?.userId!!;
+
+  const items = await UserService.getUserInventoryItems(userId);
+
+  res.status(200).json({
+    data: {
+      items,
     },
   });
 };

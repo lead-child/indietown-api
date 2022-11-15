@@ -1,6 +1,6 @@
 import { BadRequestException, NotFoundException } from "@src/common/exception";
 import prisma from "@src/prisma";
-import { UserWithEquipmentId } from "./user.model";
+import { UserInventoryItem, UserWithEquipmentId } from "./user.model";
 
 export interface CreateUserCommand {
   accountId: number;
@@ -100,4 +100,47 @@ export const getUserWithEquipmentId = async (
       leftShieldId: user?.equipment?.leftShieldItem?.leftShieldId,
     },
   };
+};
+
+export const getUserInventoryItems = async (
+  userId: number
+): Promise<UserInventoryItem[]> => {
+  const userItems = await prisma.userInventoryItem.findMany({
+    where: { userId: userId, amount: { gt: 0 } },
+    select: {
+      id: true,
+      userId: true,
+      item: {
+        select: {
+          id: true,
+          type: true,
+          name: true,
+          grade: true,
+          description: true,
+          equipmentType: true,
+        },
+      },
+      amount: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+
+  return userItems.map((userItem) => {
+    return {
+      id: userItem.id,
+      userId: userItem.userId,
+      item: userItem.item && {
+        id: userItem.item.id,
+        type: userItem.item.type,
+        equipmentType: userItem.item.equipmentType,
+        name: userItem.item.name,
+        grade: userItem.item.grade,
+        description: userItem.item.description,
+      },
+      amount: userItem.amount,
+      createdAt: userItem.createdAt,
+      updatedAt: userItem.updatedAt,
+    };
+  });
 };

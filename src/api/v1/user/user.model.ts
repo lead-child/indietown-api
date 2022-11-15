@@ -1,3 +1,6 @@
+import { ItemEquipmentType, ItemGrade, ItemType } from "@prisma/client";
+import { Item } from "../item/item.model";
+
 export interface UserWithEquipmentId {
   id: number;
   name: string;
@@ -16,4 +19,25 @@ export interface UserWithEquipmentId {
     rightWeaponId: number | null | undefined;
     leftShieldId: number | null | undefined;
   };
+}
+
+export interface UserInventoryItem {
+  id: number;
+  userId: number;
+
+  item:
+    | {
+        id: number;
+        type: ItemType;
+        grade: ItemGrade;
+        name: string;
+        description: string;
+        equipmentType: ItemEquipmentType;
+      }
+    | null
+    | undefined;
+  amount: number;
+
+  createdAt: Date;
+  updatedAt: Date;
 }

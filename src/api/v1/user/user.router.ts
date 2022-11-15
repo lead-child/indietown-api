@@ -7,6 +7,8 @@ const router = Router();
 router.use(async(authenticator));
 
 router.post("/", async(controller.createUser));
+
+router.get("/inventory", async(controller.getUserInventoryById));
 router.get("/:id", async(controller.getUserById));
 
 export { router as userRouter };
