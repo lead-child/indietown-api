@@ -1,6 +1,10 @@
 import { BadRequestException, NotFoundException } from "@src/common/exception";
 import prisma from "@src/prisma";
-import { UserInventoryItem, UserWithEquipmentId } from "./user.model";
+import {
+  UserEquipmentDetail,
+  UserInventoryItem,
+  UserWithEquipmentId,
+} from "./user.model";
 
 export interface CreateUserCommand {
   accountId: number;
@@ -129,7 +133,6 @@ export const getUserInventoryItems = async (
   return userItems.map((userItem) => {
     return {
       id: userItem.id,
-      userId: userItem.userId,
       item: userItem.item && {
         id: userItem.item.id,
         type: userItem.item.type,
@@ -139,8 +142,139 @@ export const getUserInventoryItems = async (
         description: userItem.item.description,
       },
       amount: userItem.amount,
-      createdAt: userItem.createdAt,
-      updatedAt: userItem.updatedAt,
     };
   });
+};
+
+export const getUserEquipment = async (
+  userId: number
+): Promise<UserEquipmentDetail> => {
+  const equipment = await prisma.userEquipment.findFirst({
+    where: { userId: userId },
+    select: {
+      headItem: {
+        select: {
+          id: true,
+          type: true,
+          grade: true,
+          name: true,
+          description: true,
+          equipmentType: true,
+        },
+      },
+      torsoItem: {
+        select: {
+          id: true,
+          type: true,
+          grade: true,
+          name: true,
+          description: true,
+          equipmentType: true,
+        },
+      },
+      legsItem: {
+        select: {
+          id: true,
+          type: true,
+          grade: true,
+          name: true,
+          description: true,
+          equipmentType: true,
+        },
+      },
+      leftWeaponItem: {
+        select: {
+          id: true,
+          type: true,
+          grade: true,
+          name: true,
+          description: true,
+          equipmentType: true,
+        },
+      },
+      rightWeaponItem: {
+        select: {
+          id: true,
+          type: true,
+          grade: true,
+          name: true,
+          description: true,
+          equipmentType: true,
+        },
+      },
+      leftShieldItem: {
+        select: {
+          id: true,
+          type: true,
+          grade: true,
+          name: true,
+          description: true,
+          equipmentType: true,
+        },
+      },
+    },
+  });
+
+  return {
+    headItem:
+      (equipment?.headItem && {
+        id: equipment.headItem.id,
+        type: equipment.headItem.type,
+        grade: equipment.headItem.grade,
+        name: equipment.headItem.name,
+        description: equipment.headItem.description,
+        equipmentType: equipment.headItem.equipmentType,
+      }) ||
+      null,
+    torsoItem:
+      (equipment?.torsoItem && {
+        id: equipment.torsoItem.id,
+        type: equipment.torsoItem.type,
+        grade: equipment.torsoItem.grade,
+        name: equipment.torsoItem.name,
+        description: equipment.torsoItem.description,
+        equipmentType: equipment.torsoItem.equipmentType,
+      }) ||
+      null,
+    legsItem:
+      (equipment?.legsItem && {
+        id: equipment.legsItem.id,
+        type: equipment.legsItem.type,
+        grade: equipment.legsItem.grade,
+        name: equipment.legsItem.name,
+        description: equipment.legsItem.description,
+        equipmentType: equipment.legsItem.equipmentType,
+      }) ||
+      null,
+    leftWeaponItem:
+      (equipment?.leftWeaponItem && {
+        id: equipment.leftWeaponItem.id,
+        type: equipment.leftWeaponItem.type,
+        grade: equipment.leftWeaponItem.grade,
+        name: equipment.leftWeaponItem.name,
+        description: equipment.leftWeaponItem.description,
+        equipmentType: equipment.leftWeaponItem.equipmentType,
+      }) ||
+      null,
+    rightWeaponItem:
+      (equipment?.rightWeaponItem && {
+        id: equipment.rightWeaponItem.id,
+        type: equipment.rightWeaponItem.type,
+        grade: equipment.rightWeaponItem.grade,
+        name: equipment.rightWeaponItem.name,
+        description: equipment.rightWeaponItem.description,
+        equipmentType: equipment.rightWeaponItem.equipmentType,
+      }) ||
+      null,
+    leftShieldItem:
+      (equipment?.leftShieldItem && {
+        id: equipment.leftShieldItem.id,
+        type: equipment.leftShieldItem.type,
+        grade: equipment.leftShieldItem.grade,
+        name: equipment.leftShieldItem.name,
+        description: equipment.leftShieldItem.description,
+        equipmentType: equipment.leftShieldItem.equipmentType,
+      }) ||
+      null,
+  };
 };

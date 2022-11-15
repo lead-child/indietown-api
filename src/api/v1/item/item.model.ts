@@ -27,3 +27,12 @@ export interface Item {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface ItemViewModel {
+  id: number;
+  type: ItemType;
+  grade: ItemGrade;
+  name: string;
+  description: string;
+  equipmentType: ItemEquipmentType;
+}

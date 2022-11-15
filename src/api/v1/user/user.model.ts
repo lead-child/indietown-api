@@ -1,5 +1,5 @@
 import { ItemEquipmentType, ItemGrade, ItemType } from "@prisma/client";
-import { Item } from "../item/item.model";
+import { ItemViewModel } from "../item/item.model";
 
 export interface UserWithEquipmentId {
   id: number;
@@ -21,23 +21,17 @@ export interface UserWithEquipmentId {
   };
 }
 
+export interface UserEquipmentDetail {
+  headItem: ItemViewModel | null;
+  torsoItem: ItemViewModel | null;
+  legsItem: ItemViewModel | null;
+  leftWeaponItem: ItemViewModel | null;
+  rightWeaponItem: ItemViewModel | null;
+  leftShieldItem: ItemViewModel | null;
+}
+
 export interface UserInventoryItem {
   id: number;
-  userId: number;
-
-  item:
-    | {
-        id: number;
-        type: ItemType;
-        grade: ItemGrade;
-        name: string;
-        description: string;
-        equipmentType: ItemEquipmentType;
-      }
-    | null
-    | undefined;
+  item: ItemViewModel | null | undefined;
   amount: number;
-
-  createdAt: Date;
-  updatedAt: Date;
 }

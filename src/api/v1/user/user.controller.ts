@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import { ApiDataResponse } from "@src/common/response";
-import { UserInventoryItem, UserWithEquipmentId } from "./user.model";
+import {
+  UserEquipmentDetail,
+  UserInventoryItem,
+  UserWithEquipmentId,
+} from "./user.model";
 import * as UserService from "./user.service";
 
 interface CreateUserRequest {
@@ -48,7 +52,8 @@ export const getUserById = async (
 };
 
 interface GetUserInventoryResponse {
-  items: UserInventoryItem[];
+  equipment: UserEquipmentDetail;
+  inventoryItems: UserInventoryItem[];
 }
 
 export const getUserInventoryById = async (
@@ -57,11 +62,13 @@ export const getUserInventoryById = async (
 ) => {
   const userId = req.context?.userId!!;
 
-  const items = await UserService.getUserInventoryItems(userId);
+  const equipment = await UserService.getUserEquipment(userId);
+  const inventoryItems = await UserService.getUserInventoryItems(userId);
 
   res.status(200).json({
     data: {
-      items,
+      equipment,
+      inventoryItems,
     },
   });
 };
