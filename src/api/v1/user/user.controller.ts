@@ -51,6 +51,21 @@ export const getUserById = async (
   });
 };
 
+export const getUser = async (
+  req: Request,
+  res: Response<ApiDataResponse<GetUserByIdResponse>>
+) => {
+  const userId = req.context?.userId!!;
+
+  const user = await UserService.getUserWithEquipmentId(userId);
+
+  res.status(200).json({
+    data: {
+      user,
+    },
+  });
+};
+
 interface GetUserInventoryResponse {
   equipment: UserEquipmentDetail;
   inventoryItems: UserInventoryItem[];
