@@ -54,13 +54,6 @@ model Item {
   updatedAt DateTime @updatedAt
 
   InventoryItems UserInventoryItem[] @relation("InventoryItem")
-
-  headItemEquipments UserEquipment[] @relation("headItem")
-  torsoItemEquipments UserEquipment[] @relation("torsoItem")
-  legsItemEquipments UserEquipment[] @relation("legsItem")
-  leftWeaponItemEquipments UserEquipment[] @relation("leftWeaponItem")
-  rightWeaponItemEquipments UserEquipment[] @relation("rightWeaponItem")
-  leftShieldItemEquipments UserEquipment[] @relation("leftShieldItem")
 }
 
 enum ItemType {
@@ -81,10 +74,10 @@ enum ItemEquipmentType {
   HEAD
   TORSO
   LEGS
-  WEAPON
+  LEFT_WEAPON
+  RIGHT_WEAPON
   SHIELD
 }
-
 
 // 유저 스키마
 
@@ -126,6 +119,13 @@ model UserInventoryItem {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  headItemEquipments UserEquipment[] @relation("headItem")
+  torsoItemEquipments UserEquipment[] @relation("torsoItem")
+  legsItemEquipments UserEquipment[] @relation("legsItem")
+  leftWeaponItemEquipments UserEquipment[] @relation("leftWeaponItem")
+  rightWeaponItemEquipments UserEquipment[] @relation("rightWeaponItem")
+  leftShieldItemEquipments UserEquipment[] @relation("leftShieldItem")
 }
 
 model UserEquipment {
@@ -133,22 +133,22 @@ model UserEquipment {
   user User @relation(fields: [userId], references: [id])
 
   headItemId Int?
-  headItem Item? @relation(name: "headItem", fields: [headItemId], references: [id])
+  headItem UserInventoryItem? @relation(name: "headItem", fields: [headItemId], references: [id])
 
   torsoItemId Int?
-  torsoItem Item? @relation(name: "torsoItem", fields: [torsoItemId], references: [id])
+  torsoItem UserInventoryItem? @relation(name: "torsoItem", fields: [torsoItemId], references: [id])
 
   legsItemId Int?
-  legsItem Item? @relation(name: "legsItem", fields: [legsItemId], references: [id])
+  legsItem UserInventoryItem? @relation(name: "legsItem", fields: [legsItemId], references: [id])
 
   leftWeaponItemId Int?
-  leftWeaponItem Item? @relation(name: "leftWeaponItem", fields: [leftWeaponItemId], references: [id])
+  leftWeaponItem UserInventoryItem? @relation(name: "leftWeaponItem", fields: [leftWeaponItemId], references: [id])
 
   rightWeaponItemId Int?
-  rightWeaponItem Item? @relation(name: "rightWeaponItem", fields: [rightWeaponItemId], references: [id])
+  rightWeaponItem UserInventoryItem? @relation(name: "rightWeaponItem", fields: [rightWeaponItemId], references: [id])
  
   leftShieldItemId Int?
-  leftShieldItem Item? @relation(name: "leftShieldItem", fields: [leftShieldItemId], references: [id])
+  leftShieldItem UserInventoryItem? @relation(name: "leftShieldItem", fields: [leftShieldItemId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
