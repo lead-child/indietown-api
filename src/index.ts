@@ -1,4 +1,6 @@
 require("dotenv").config();
+import "module-alias/register";
+
 import express from "express";
 import cors from "cors";
 import { exceptionHandler } from "./common/exception.handler";
