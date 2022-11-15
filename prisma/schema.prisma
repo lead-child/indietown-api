@@ -53,6 +53,8 @@ model Item {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  InventoryItems UserInventoryItem[] @relation("InventoryItem")
+
   headItemEquipments UserEquipment[] @relation("headItem")
   torsoItemEquipments UserEquipment[] @relation("torsoItem")
   legsItemEquipments UserEquipment[] @relation("legsItem")
@@ -118,6 +120,8 @@ model UserInventoryItem {
   
   userId Int
   itemId Int
+  item Item? @relation(name: "InventoryItem", fields: [itemId], references: [id])
+
   amount Int @default(1)
 
   createdAt DateTime @default(now())
