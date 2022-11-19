@@ -35,19 +35,9 @@ export const authenticator = async (
       where: { accountId: { equals: accountId } },
     });
 
-    if (!user) {
-      next(
-        new UnauthroizeException(
-          "auth.invalid_auth_token",
-          "인증 토큰이 올바르지 않습니다."
-        )
-      );
-      return;
-    }
-
     req.context = {
       accountId,
-      userId: user.id,
+      userId: user?.id,
     };
 
     next();
