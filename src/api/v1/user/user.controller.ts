@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ApiDataResponse } from "@src/common/response";
 import {
-  UserEquipmentDetail,
+  UserEquipment,
   UserInventoryItem,
   UserWithEquipmentId,
 } from "./user.model";
@@ -67,8 +67,8 @@ export const getUser = async (
 };
 
 interface GetUserInventoryResponse {
-  equipment: UserEquipmentDetail;
-  inventoryItems: UserInventoryItem[];
+  equipment: UserEquipment;
+  items: UserInventoryItem[];
 }
 
 export const getUserInventoryById = async (
@@ -78,12 +78,36 @@ export const getUserInventoryById = async (
   const userId = req.context?.userId!!;
 
   const equipment = await UserService.getUserEquipment(userId);
-  const inventoryItems = await UserService.getUserInventoryItems(userId);
+  const items = await UserService.getUserInventoryItems(userId);
 
   res.status(200).json({
     data: {
       equipment,
-      inventoryItems,
+      items,
     },
   });
+};
+
+export const equipItem = async (
+  req: Request<{ id: string }, any, any>,
+  res: Response<ApiDataResponse<any>>
+) => {
+  var userId = req.context?.userId!!;
+  var itemId = parseInt(req.params.id);
+
+  await UserService.equipItem(userId, itemId);
+
+  res.status(200).json({ data: {} });
+};
+
+export const unequipItem = async (
+  req: Request<{ id: string }, any, any>,
+  res: Response<ApiDataResponse<any>>
+) => {
+  var userId = req.context?.userId!!;
+  var itemId = parseInt(req.params.id);
+
+  await UserService.unequipItem(userId, itemId);
+
+  res.status(200).json({ data: {} });
 };

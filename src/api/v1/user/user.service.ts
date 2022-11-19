@@ -1,8 +1,8 @@
-import { ItemEquipmentType, ItemType } from "@prisma/client";
+import { ItemEquipmentType, ItemType, Prisma } from "@prisma/client";
 import { BadRequestException, NotFoundException } from "@src/common/exception";
 import prisma from "@src/prisma";
 import {
-  UserEquipmentDetail,
+  UserEquipment,
   UserInventoryItem,
   UserWithEquipmentId,
 } from "./user.model";
@@ -122,340 +122,226 @@ export const getUserWithEquipmentId = async (
 export const getUserInventoryItems = async (
   userId: number
 ): Promise<UserInventoryItem[]> => {
-  const userItems = await prisma.userInventoryItem.findMany({
-    where: { userId: userId, amount: { gt: 0 } },
+  const inventoryItems = await prisma.userInventoryItem.findMany({
+    where: { userId },
     select: {
       id: true,
       userId: true,
-      item: {
-        select: {
-          id: true,
-          type: true,
-          name: true,
-          grade: true,
-          description: true,
-          equipmentType: true,
-        },
-      },
+      itemId: true,
       amount: true,
       createdAt: true,
       updatedAt: true,
     },
   });
 
-  return userItems.map((userItem) => {
+  return inventoryItems.map((item) => {
     return {
-      id: userItem.id,
-      item: userItem.item && {
-        id: userItem.item.id,
-        type: userItem.item.type,
-        equipmentType: userItem.item.equipmentType,
-        name: userItem.item.name,
-        grade: userItem.item.grade,
-        description: userItem.item.description,
-      },
-      amount: userItem.amount,
+      id: item.id,
+      itemId: item.itemId,
+      amount: item.amount,
     };
   });
 };
 
 export const getUserEquipment = async (
   userId: number
-): Promise<UserEquipmentDetail> => {
+): Promise<UserEquipment> => {
   const equipment = await prisma.userEquipment.findFirst({
     where: { userId: userId },
     select: {
-      headItem: {
-        select: {
-          id: true,
-          item: {
-            select: {
-              id: true,
-              type: true,
-              grade: true,
-              name: true,
-              description: true,
-              equipmentType: true,
-            },
-          },
-        },
-      },
-      torsoItem: {
-        select: {
-          id: true,
-          item: {
-            select: {
-              id: true,
-              type: true,
-              grade: true,
-              name: true,
-              description: true,
-              equipmentType: true,
-            },
-          },
-        },
-      },
-      legsItem: {
-        select: {
-          id: true,
-          item: {
-            select: {
-              id: true,
-              type: true,
-              grade: true,
-              name: true,
-              description: true,
-              equipmentType: true,
-            },
-          },
-        },
-      },
-      leftWeaponItem: {
-        select: {
-          id: true,
-          item: {
-            select: {
-              id: true,
-              type: true,
-              grade: true,
-              name: true,
-              description: true,
-              equipmentType: true,
-            },
-          },
-        },
-      },
-      rightWeaponItem: {
-        select: {
-          id: true,
-          item: {
-            select: {
-              id: true,
-              type: true,
-              grade: true,
-              name: true,
-              description: true,
-              equipmentType: true,
-            },
-          },
-        },
-      },
-      leftShieldItem: {
-        select: {
-          id: true,
-          item: {
-            select: {
-              id: true,
-              type: true,
-              grade: true,
-              name: true,
-              description: true,
-              equipmentType: true,
-            },
-          },
-        },
-      },
+      headItemId: true,
+      torsoItemId: true,
+      legsItemId: true,
     },
   });
 
   return {
-    headItem:
-      (equipment?.headItem?.item && {
-        id: equipment.headItem.id,
-        item: {
-          id: equipment.headItem.item.id,
-          type: equipment.headItem.item.type,
-          grade: equipment.headItem.item.grade,
-          name: equipment.headItem.item.name,
-          description: equipment.headItem.item.description,
-          equipmentType: equipment.headItem.item.equipmentType,
-        },
-      }) ||
-      null,
-    torsoItem:
-      (equipment?.torsoItem?.item && {
-        id: equipment.torsoItem.id,
-        item: {
-          id: equipment.torsoItem.item.id,
-          type: equipment.torsoItem.item.type,
-          grade: equipment.torsoItem.item.grade,
-          name: equipment.torsoItem.item.name,
-          description: equipment.torsoItem.item.description,
-          equipmentType: equipment.torsoItem.item.equipmentType,
-        },
-      }) ||
-      null,
-    legsItem:
-      (equipment?.legsItem?.item && {
-        id: equipment.legsItem.id,
-        item: {
-          id: equipment.legsItem.item.id,
-          type: equipment.legsItem.item.type,
-          grade: equipment.legsItem.item.grade,
-          name: equipment.legsItem.item.name,
-          description: equipment.legsItem.item.description,
-          equipmentType: equipment.legsItem.item.equipmentType,
-        },
-      }) ||
-      null,
-    leftWeaponItem:
-      (equipment?.leftWeaponItem?.item && {
-        id: equipment.leftWeaponItem.id,
-        item: {
-          id: equipment.leftWeaponItem.item.id,
-          type: equipment.leftWeaponItem.item.type,
-          grade: equipment.leftWeaponItem.item.grade,
-          name: equipment.leftWeaponItem.item.name,
-          description: equipment.leftWeaponItem.item.description,
-          equipmentType: equipment.leftWeaponItem.item.equipmentType,
-        },
-      }) ||
-      null,
-    rightWeaponItem:
-      (equipment?.rightWeaponItem?.item && {
-        id: equipment.rightWeaponItem.id,
-        item: {
-          id: equipment.rightWeaponItem.item.id,
-          type: equipment.rightWeaponItem.item.type,
-          grade: equipment.rightWeaponItem.item.grade,
-          name: equipment.rightWeaponItem.item.name,
-          description: equipment.rightWeaponItem.item.description,
-          equipmentType: equipment.rightWeaponItem.item.equipmentType,
-        },
-      }) ||
-      null,
-    leftShieldItem:
-      (equipment?.leftShieldItem?.item && {
-        id: equipment.leftShieldItem.id,
-        item: {
-          id: equipment.leftShieldItem.item.id,
-          type: equipment.leftShieldItem.item.type,
-          grade: equipment.leftShieldItem.item.grade,
-          name: equipment.leftShieldItem.item.name,
-          description: equipment.leftShieldItem.item.description,
-          equipmentType: equipment.leftShieldItem.item.equipmentType,
-        },
-      }) ||
-      null,
+    headItemId: equipment?.headItemId,
+    torsoItemId: equipment?.torsoItemId,
+    legsItemId: equipment?.legsItemId,
   };
 };
 
-export const equipUserInventoryItem = async (
+export const equipItem = (userId: number, itemId: number) => {
+  return prisma.$transaction((tx) => txEquipItem(tx, userId, itemId));
+};
+
+export const unequipItem = (userId: number, itemId: number) => {
+  return prisma.$transaction((tx) => txUnequipItem(tx, userId, itemId));
+};
+
+export const txEquipItem = async (
+  tx: Prisma.TransactionClient,
   userId: number,
   inventoryItemId: number
 ) => {
-  await prisma.$transaction(async (tx) => {
-    const inventoryItem = await tx.userInventoryItem.findFirst({
-      select: {
-        id: true,
-        item: { select: { equipmentType: true } },
-      },
-      where: {
-        id: inventoryItemId,
-        userId: userId,
-        amount: { gt: 0 },
-        item: { type: ItemType.EQUIP },
-      },
-    });
+  const inventoryItem = await tx.userInventoryItem.findFirst({
+    select: {
+      id: true,
+      amount: true,
+      item: { select: { equipmentType: true } },
+    },
+    where: {
+      id: inventoryItemId,
+      userId: userId,
+      item: { type: ItemType.EQUIP },
+    },
+  });
 
-    if (!inventoryItem || !inventoryItem.item) {
-      throw new NotFoundException(
-        "user.inventory_item.not_found",
-        "아이템을 찾을 수 없습니다."
-      );
+  if (!inventoryItem || !inventoryItem.item) {
+    throw new NotFoundException(
+      "user.inventory_item.not_found",
+      "아이템을 찾을 수 없습니다."
+    );
+  }
+
+  if (inventoryItem.amount === 0) {
+    throw new NotFoundException(
+      "user.inventory_item.already_equipped",
+      "이미 장착한 아이템입니다."
+    );
+  }
+
+  const userEquipment = await tx.userEquipment.findFirst({
+    where: { userId },
+  });
+
+  // 기존 장비 착용 해제
+  if (userEquipment) {
+    let unequipItemId: number | null = null;
+
+    switch (inventoryItem.item.equipmentType) {
+      case ItemEquipmentType.HEAD:
+        if (userEquipment.headItemId != null)
+          unequipItemId = userEquipment.headItemId;
+        break;
+      case ItemEquipmentType.TORSO:
+        if (userEquipment.torsoItemId != null)
+          unequipItemId = userEquipment.torsoItemId;
+        break;
+      case ItemEquipmentType.LEGS:
+        if (userEquipment.legsItemId != null)
+          unequipItemId = userEquipment.legsItemId;
+        break;
+      case ItemEquipmentType.LEFT_WEAPON:
+        if (userEquipment.leftWeaponItemId != null)
+          unequipItemId = userEquipment.leftWeaponItemId;
+        break;
+      case ItemEquipmentType.RIGHT_WEAPON:
+        if (userEquipment.rightWeaponItemId != null)
+          unequipItemId = userEquipment.rightWeaponItemId;
+        break;
+      case ItemEquipmentType.SHIELD:
+        if (userEquipment.leftShieldItemId != null)
+          unequipItemId = userEquipment.leftShieldItemId;
+        break;
     }
 
-    await tx.userInventoryItem.update({
-      where: { id: inventoryItemId },
-      data: {
-        amount: 0,
-      },
-    });
+    if (unequipItemId) {
+      await txUnequipItem(tx, userId, unequipItemId);
+    }
+  }
 
-    await tx.userEquipment.update({
-      where: { userId: userId },
-      data: {
-        ...(inventoryItem.item.equipmentType === ItemEquipmentType.HEAD && {
-          headItemId: inventoryItemId,
-        }),
-        ...(inventoryItem.item.equipmentType === ItemEquipmentType.TORSO && {
-          torsoItemId: inventoryItemId,
-        }),
-        ...(inventoryItem.item.equipmentType === ItemEquipmentType.LEGS && {
-          legsItemId: inventoryItemId,
-        }),
-        ...(inventoryItem.item.equipmentType ===
-          ItemEquipmentType.LEFT_WEAPON && {
-          leftWeaponItemId: inventoryItemId,
-        }),
-        ...(inventoryItem.item.equipmentType ===
-          ItemEquipmentType.RIGHT_WEAPON && {
-          rightWeaponItemId: inventoryItemId,
-        }),
-        ...(inventoryItem.item.equipmentType === ItemEquipmentType.SHIELD && {
-          leftShieldItemId: inventoryItemId,
-        }),
-      },
-    });
+  await tx.userInventoryItem.update({
+    where: { id: inventoryItemId },
+    data: {
+      amount: 0,
+    },
+  });
+
+  var payload = {
+    ...(inventoryItem.item.equipmentType === ItemEquipmentType.HEAD && {
+      headItemId: inventoryItemId,
+    }),
+    ...(inventoryItem.item.equipmentType === ItemEquipmentType.TORSO && {
+      torsoItemId: inventoryItemId,
+    }),
+    ...(inventoryItem.item.equipmentType === ItemEquipmentType.LEGS && {
+      legsItemId: inventoryItemId,
+    }),
+    ...(inventoryItem.item.equipmentType === ItemEquipmentType.LEFT_WEAPON && {
+      leftWeaponItemId: inventoryItemId,
+    }),
+    ...(inventoryItem.item.equipmentType === ItemEquipmentType.RIGHT_WEAPON && {
+      rightWeaponItemId: inventoryItemId,
+    }),
+    ...(inventoryItem.item.equipmentType === ItemEquipmentType.SHIELD && {
+      leftShieldItemId: inventoryItemId,
+    }),
+  };
+
+  await tx.userEquipment.upsert({
+    where: { userId: userId },
+    create: {
+      userId: userId,
+      ...payload,
+    },
+    update: payload,
   });
 };
 
-export const unequipUserItem = async (
+export const txUnequipItem = async (
+  tx: Prisma.TransactionClient,
   userId: number,
   inventoryItemId: number
 ) => {
-  await prisma.$transaction(async (tx) => {
-    const inventoryItem = await tx.userInventoryItem.findFirst({
-      select: {
-        id: true,
-        item: { select: { equipmentType: true } },
-      },
-      where: {
-        id: inventoryItemId,
-        userId: userId,
-        amount: { equals: 0 },
-        item: { type: ItemType.EQUIP },
-      },
-    });
+  const inventoryItem = await tx.userInventoryItem.findFirst({
+    select: {
+      id: true,
+      amount: true,
+      item: { select: { equipmentType: true } },
+    },
+    where: {
+      id: inventoryItemId,
+      userId: userId,
+      item: { type: ItemType.EQUIP },
+    },
+  });
 
-    if (!inventoryItem || !inventoryItem.item) {
-      throw new NotFoundException(
-        "user.inventory_item.not_found",
-        "아이템을 찾을 수 없습니다."
-      );
-    }
+  if (!inventoryItem || !inventoryItem.item) {
+    throw new NotFoundException(
+      "user.inventory_item.not_found",
+      "아이템을 찾을 수 없습니다."
+    );
+  }
 
-    await tx.userInventoryItem.update({
-      where: { id: inventoryItemId },
-      data: {
-        amount: 1,
-      },
-    });
+  if (inventoryItem.amount === 1) {
+    throw new BadRequestException(
+      "user.inventory_item.not_equipped",
+      "장착중인 아이템이 아닙니다."
+    );
+  }
 
-    await tx.userEquipment.update({
-      where: { userId: userId },
-      data: {
-        ...(inventoryItem.item.equipmentType === ItemEquipmentType.HEAD && {
-          headItemId: null,
-        }),
-        ...(inventoryItem.item.equipmentType === ItemEquipmentType.TORSO && {
-          torsoItemId: null,
-        }),
-        ...(inventoryItem.item.equipmentType === ItemEquipmentType.LEGS && {
-          legsItemId: null,
-        }),
-        ...(inventoryItem.item.equipmentType ===
-          ItemEquipmentType.LEFT_WEAPON && {
-          leftWeaponItemId: null,
-        }),
-        ...(inventoryItem.item.equipmentType ===
-          ItemEquipmentType.RIGHT_WEAPON && {
-          rightWeaponItemId: null,
-        }),
-        ...(inventoryItem.item.equipmentType === ItemEquipmentType.SHIELD && {
-          leftShieldItemId: null,
-        }),
-      },
-    });
+  await tx.userInventoryItem.update({
+    where: { id: inventoryItemId },
+    data: {
+      amount: 1,
+    },
+  });
+
+  await tx.userEquipment.update({
+    where: { userId: userId },
+    data: {
+      ...(inventoryItem.item.equipmentType === ItemEquipmentType.HEAD && {
+        headItemId: null,
+      }),
+      ...(inventoryItem.item.equipmentType === ItemEquipmentType.TORSO && {
+        torsoItemId: null,
+      }),
+      ...(inventoryItem.item.equipmentType === ItemEquipmentType.LEGS && {
+        legsItemId: null,
+      }),
+      ...(inventoryItem.item.equipmentType ===
+        ItemEquipmentType.LEFT_WEAPON && {
+        leftWeaponItemId: null,
+      }),
+      ...(inventoryItem.item.equipmentType ===
+        ItemEquipmentType.RIGHT_WEAPON && {
+        rightWeaponItemId: null,
+      }),
+      ...(inventoryItem.item.equipmentType === ItemEquipmentType.SHIELD && {
+        leftShieldItemId: null,
+      }),
+    },
   });
 };

@@ -20,22 +20,14 @@ export interface UserWithEquipmentId {
   };
 }
 
-export interface UserEquipmentDetail {
-  headItem: UserEqipmentItem | null;
-  torsoItem: UserEqipmentItem | null;
-  legsItem: UserEqipmentItem | null;
-  leftWeaponItem: UserEqipmentItem | null;
-  rightWeaponItem: UserEqipmentItem | null;
-  leftShieldItem: UserEqipmentItem | null;
-}
-
-export interface UserEqipmentItem {
-  id: number;
-  item: ItemViewModel;
+export interface UserEquipment {
+  headItemId: number | null | undefined;
+  torsoItemId: number | null | undefined;
+  legsItemId: number | null | undefined;
 }
 
 export interface UserInventoryItem {
   id: number;
-  item: ItemViewModel | null;
+  itemId: number;
   amount: number;
 }
