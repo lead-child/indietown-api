@@ -21,9 +21,9 @@ export interface UserWithEquipmentId {
 }
 
 export interface UserEquipment {
-  headItemId: number | null | undefined;
-  torsoItemId: number | null | undefined;
-  legsItemId: number | null | undefined;
+  headItem: UserInventoryItem | null | undefined;
+  torsoItem: UserInventoryItem | null | undefined;
+  legsItem: UserInventoryItem | null | undefined;
 }
 
 export interface UserInventoryItem {

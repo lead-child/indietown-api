@@ -123,7 +123,10 @@ export const getUserInventoryItems = async (
   userId: number
 ): Promise<UserInventoryItem[]> => {
   const inventoryItems = await prisma.userInventoryItem.findMany({
-    where: { userId },
+    where: {
+      userId,
+      amount: { gt: 0 },
+    },
     select: {
       id: true,
       userId: true,
@@ -149,16 +152,34 @@ export const getUserEquipment = async (
   const equipment = await prisma.userEquipment.findFirst({
     where: { userId: userId },
     select: {
-      headItemId: true,
-      torsoItemId: true,
-      legsItemId: true,
+      headItem: {
+        select: {
+          id: true,
+          itemId: true,
+          amount: true,
+        },
+      },
+      torsoItem: {
+        select: {
+          id: true,
+          itemId: true,
+          amount: true,
+        },
+      },
+      legsItem: {
+        select: {
+          id: true,
+          itemId: true,
+          amount: true,
+        },
+      },
     },
   });
 
   return {
-    headItemId: equipment?.headItemId,
-    torsoItemId: equipment?.torsoItemId,
-    legsItemId: equipment?.legsItemId,
+    headItem: equipment?.headItem,
+    torsoItem: equipment?.torsoItem,
+    legsItem: equipment?.legsItem,
   };
 };
 
