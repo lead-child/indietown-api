@@ -1,11 +1,10 @@
-import { ItemViewModel } from "../item/item.model";
-
 export interface UserWithEquipmentId {
   id: number;
   name: string;
   level: number;
   headId: number;
   hairId: number;
+  cash: number;
   equipment: {
     headId: number | null | undefined;
     headAccId: number | null | undefined;

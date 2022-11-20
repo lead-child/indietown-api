@@ -98,10 +98,16 @@ export const getUserWithEquipmentId = async (
     );
   }
 
+  const wallet = await prisma.userWallet.findFirst({
+    where: { userId },
+    select: { balanceCash: true },
+  });
+
   return {
     id: user.id,
     name: user.name,
     level: user.level,
+    cash: wallet?.balanceCash?.toNumber() || 0,
     headId: user.headId,
     hairId: user.hairId,
     equipment: {
