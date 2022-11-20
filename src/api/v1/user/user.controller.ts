@@ -89,7 +89,7 @@ export const getUserInventoryById = async (
 };
 
 export const addItem = async (
-  req: Request<{ id: string }, any, any>,
+  req: Request<any, any, any>,
   res: Response<ApiDataResponse<{}>>
 ) => {
   const userId = req.context?.userId!!;
