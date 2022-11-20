@@ -11,7 +11,7 @@ export const chargeCash = async (userId: number, amount: number) => {
 
   await prisma.$transaction(async (tx) => {
     await tx.userWallet.upsert({
-      where: { id: userId },
+      where: { userId },
       create: {
         userId: userId,
         balanceCash: amount,
@@ -46,7 +46,7 @@ export const spendCash = async (userId: number, amount: number) => {
     }
 
     await tx.userWallet.update({
-      where: { userId: userId },
+      where: { userId },
       data: {
         balanceCash: {
           decrement: amount,
