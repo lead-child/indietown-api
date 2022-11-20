@@ -9,6 +9,7 @@ router.use(async(authenticator));
 router.post("/", async(controller.createUser));
 router.post("/inventory/items/:id/equip", async(controller.equipItem));
 router.post("/inventory/items/:id/unequip", async(controller.unequipItem));
+router.post("/inventory/items", async(controller.addItem));
 
 router.get("/", async(controller.getUser));
 router.get("/inventory", async(controller.getUserInventoryById));

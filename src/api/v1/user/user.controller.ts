@@ -88,6 +88,22 @@ export const getUserInventoryById = async (
   });
 };
 
+export const addItem = async (
+  req: Request<{ id: string }, any, any>,
+  res: Response<ApiDataResponse<{}>>
+) => {
+  const userId = req.context?.userId!!;
+
+  const itemId = Number.parseInt(req.body.itemId);
+  const amount = Number.parseInt(req.body.amount);
+
+  await UserService.addItem(userId, itemId, amount);
+
+  res.status(200).json({
+    data: {},
+  });
+};
+
 export const equipItem = async (
   req: Request<{ id: string }, any, any>,
   res: Response<ApiDataResponse<any>>

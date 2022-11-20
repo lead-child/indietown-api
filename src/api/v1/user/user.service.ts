@@ -372,3 +372,69 @@ export const txUnequipItem = async (
     },
   });
 };
+
+export const addItem = async (
+  userId: number,
+  itemId: number,
+  amount: number
+) => {
+  if (amount <= 0) {
+    throw new BadRequestException(
+      "inventory.invalid_amount",
+      "잘못된 수량입니다."
+    );
+  }
+
+  await prisma.$transaction(async (tx) => {
+    const item = await tx.item.findFirst({
+      where: { id: itemId },
+    });
+
+    if (!item) {
+      throw new BadRequestException(
+        "inventory.invalid_item_id",
+        "잘못된 아이템 아이디입니다."
+      );
+    }
+
+    if (item.type === ItemType.EQUIP && amount > 1) {
+      throw new BadRequestException(
+        "inventory.invalid_amount",
+        "장비는 최대 1개만 소유할 수 있습니다."
+      );
+    }
+
+    const inventoryItem = await tx.userInventoryItem.findFirst({
+      where: {
+        userId,
+        itemId,
+      },
+    });
+
+    if (inventoryItem) {
+      if (item.type === ItemType.EQUIP) {
+        throw new BadRequestException(
+          "inventory.invalid_amount",
+          "장비는 최대 1개만 소유할 수 있습니다."
+        );
+      }
+
+      await tx.userInventoryItem.update({
+        where: { id: inventoryItem.id },
+        data: {
+          amount: {
+            increment: amount,
+          },
+        },
+      });
+    } else {
+      await tx.userInventoryItem.create({
+        data: {
+          userId,
+          itemId,
+          amount,
+        },
+      });
+    }
+  });
+};
