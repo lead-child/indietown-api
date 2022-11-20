@@ -46,7 +46,7 @@ export const spendCash = async (userId: number, amount: number) => {
     }
 
     await tx.userWallet.update({
-      where: { id: userId },
+      where: { userId: userId },
       data: {
         balanceCash: {
           decrement: amount,
